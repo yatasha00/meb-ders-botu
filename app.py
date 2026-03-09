@@ -6,24 +6,26 @@ import datetime
 import json
 
 # --- Google Sheets Ayarları ---
-def save_to_sheet(kazanim):
+def save_to_sheet(tahmini_ders, kazanim):
     try:
         scopes = [
             "https://www.googleapis.com/auth/spreadsheets",
             "https://www.googleapis.com/auth/drive"
         ]
-        
-        # JSON dosyası yerine Streamlit'in gizli kasasından bilgileri çekiyoruz
         creds_dict = dict(st.secrets["google_sheets_sifrem"])
         creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
         client = gspread.authorize(creds)
         
         sheet = client.open("Ders Planı Kayıtları").sheet1 
+        
+        # Tarih ve zamanı al
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        sheet.append_row([now, kazanim])
+        
+        # Tabloya 3 sütun olarak kaydet: Tarih | Tahmini Ders | Kazanım
+        sheet.append_row([now, tahmini_ders, kazanim])
         return True
     except Exception as e:
-        st.warning(f"Google Sheet'e kaydederken bir hata oluştu: {e}")
+        print(f"Google Sheet'e kaydederken hata: {e}") # Sadece arka planda yazar, ekranı bozmaz
         return False
 
 # --- Sayfa Ayarları ---
@@ -56,39 +58,48 @@ if st.button("Ders İçeriğini Hazırla", type="primary"):
         # Gemini İstemcisi oluşturuluyor
         client = genai.Client(api_key=api_key)
         
-        # Yapay zekaya vereceğimiz GÜNCELLENMİŞ ve KORUMALI talimat
+        # YAPAY ZEKAYA YENİ VE KORUMALI TALİMAT
         prompt = f"""
         Sen MEB müfredatına tam hakim, yaratıcı ve uzman bir öğretmensin.
-        Kullanıcının girdiği konu/kazanım: '{kazanim}'
+        Kullanıcının girdiği kazanım: '{kazanim}'
         
         ÖNEMLİ GÜVENLİK KONTROLÜ: 
-        Öncelikle bu metnin okul, eğitim, ders müfredatı veya pedagojik bir konu olup olmadığını kesin bir şekilde kontrol et. Eğer kullanıcı küfür, argo, hakaret, anlamsız kelimeler (örn: 'arda mal') veya eğitimle tamamen alakasız bir şey yazdıysa, DERS PLANI HAZIRLAMA VE SADECE ŞU GİZLİ KODU YAZ: "HATA_EGITIM_DISI"
+        Öncelikle bu metnin okul, eğitim veya pedagojik bir konu olup olmadığını kontrol et. Eğer kullanıcı küfür, argo, anlamsız (örn: 'arda mal') veya eğitimle tamamen alakasız bir şey yazdıysa SADECE ŞU GİZLİ KODU YAZ: "HATA_EGITIM_DISI" ve başka hiçbir şey yazma.
         
-        Eğer girilen metin gerçekten okulla ve eğitimle ilgiliyse, lütfen yanıtını aşağıdaki 3 ana başlık altında, açık ve anlaşılır bir dille oluştur:
+        Eğer konu eğitimle ilgiliyse, ÖNCE bu kazanımın MEB müfredatında hangi derse ait olduğunu tahmin et. 
+        Yanıtının EN BAŞINA tam olarak şu formatta yaz:
+        Tahmini Ders: [Dersin Adı]
         
+        Ardından şu 3 başlıkta içeriği üret:
         1. Ön Bilgi Ölçme Etkinliği
-        (Öğrencilerin bu konu hakkındaki mevcut bilgilerini ve olası kavram yanılgılarını ortaya çıkaracak, derse merak uyandırarak giriş yapmayı sağlayacak etkileşimli bir etkinlik planla. Bu bir B-İ-Ö tablosu uygulaması, kısa bir sokratik sorgulama, ilgi çekici bir beyin fırtınası sorusu veya kavram karikatürü tarzı bir tartışma olabilir.)
-        
         2. Kısa Hikaye veya Vaka Analizi
-        (Öğrencilerin ilgisini çekecek, derse giriş veya pekiştirme amaçlı kullanılabilecek, yaş grubuna uygun kısa bir hikaye veya olay kurgusu.)
-        
         3. Çalışma Kağıdı Taslağı
-        (Öğrencilerin ders sonunda doldurabileceği, açık uçlu sorular, boşluk doldurma veya eşleştirme gibi bölümler içeren yapılandırılmış bir çalışma kağıdı metni.)
         """
         
         with st.spinner("Ders içeriğiniz özenle hazırlanıyor... Lütfen bekleyin."):
             try:
-                # Gemini 2.5 Flash modelini kullanarak içerik üretimi
                 response = client.models.generate_content(
                     model='gemini-2.5-flash',
                     contents=prompt,
                 )
                 
-                # Sonucu kontrol etme ve ekrana yazdırma
+                # TROLL / SAÇMA METİN KONTROLÜ
                 if "HATA_EGITIM_DISI" in response.text:
-                    st.error("🚨 Lütfen sadece okul, ders veya eğitimle ilgili geçerli bir konu girin. Argo, anlamsız veya eğitim dışı girişler sistem tarafından reddedilmektedir.")
+                    st.error("🚨 Lütfen sadece okul, ders veya eğitimle ilgili geçerli bir konu girin. Alakasız girişler reddedildi.")
+                    # DİKKAT: Buraya save_to_sheet eklemedik, tabloya yazılmayacak!
                 else:
-                    st.success("İçerik başarıyla oluşturuldu ve aramanız veritabanına kaydedildi!")
+                    # 1. Dersi yapay zekanın metninden cımbızla alıyoruz
+                    tahmini_ders = "Bilinmeyen Ders"
+                    for satir in response.text.split('\n'):
+                        if "Tahmini Ders:" in satir:
+                            tahmini_ders = satir.split("Tahmini Ders:")[1].strip()
+                            break
+                            
+                    # 2. ŞİMDİ Google Sheets'e kaydediyoruz (Sadece başarılı olanlar)
+                    save_to_sheet(tahmini_ders, kazanim)
+                    
+                    # 3. Sonucu Ekrana Basıyoruz
+                    st.success(f"İçerik başarıyla oluşturuldu! (Algılanan Ders: {tahmini_ders})")
                     st.markdown("---")
                     st.markdown(response.text)
                 
