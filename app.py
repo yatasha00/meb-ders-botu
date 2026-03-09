@@ -56,12 +56,15 @@ if st.button("Ders İçeriğini Hazırla", type="primary"):
         # Gemini İstemcisi oluşturuluyor
         client = genai.Client(api_key=api_key)
         
-        # Yapay zekaya vereceğimiz GÜNCELLENMİŞ talimat
+        # Yapay zekaya vereceğimiz GÜNCELLENMİŞ ve KORUMALI talimat
         prompt = f"""
         Sen MEB müfredatına tam hakim, yaratıcı ve uzman bir öğretmensin.
-        Bana şu kazanım ile ilgili bir ders planı içeriği hazırla: '{kazanim}'
+        Kullanıcının girdiği konu/kazanım: '{kazanim}'
         
-        Lütfen yanıtını aşağıdaki 3 ana başlık altında, açık ve anlaşılır bir dille oluştur:
+        ÖNEMLİ GÜVENLİK KONTROLÜ: 
+        Öncelikle bu metnin okul, eğitim, ders müfredatı veya pedagojik bir konu olup olmadığını kesin bir şekilde kontrol et. Eğer kullanıcı küfür, argo, hakaret, anlamsız kelimeler (örn: 'arda mal') veya eğitimle tamamen alakasız bir şey yazdıysa, DERS PLANI HAZIRLAMA VE SADECE ŞU GİZLİ KODU YAZ: "HATA_EGITIM_DISI"
+        
+        Eğer girilen metin gerçekten okulla ve eğitimle ilgiliyse, lütfen yanıtını aşağıdaki 3 ana başlık altında, açık ve anlaşılır bir dille oluştur:
         
         1. Ön Bilgi Ölçme Etkinliği
         (Öğrencilerin bu konu hakkındaki mevcut bilgilerini ve olası kavram yanılgılarını ortaya çıkaracak, derse merak uyandırarak giriş yapmayı sağlayacak etkileşimli bir etkinlik planla. Bu bir B-İ-Ö tablosu uygulaması, kısa bir sokratik sorgulama, ilgi çekici bir beyin fırtınası sorusu veya kavram karikatürü tarzı bir tartışma olabilir.)
@@ -81,10 +84,13 @@ if st.button("Ders İçeriğini Hazırla", type="primary"):
                     contents=prompt,
                 )
                 
-                # Sonucu ekrana yazdırma
-                st.success("İçerik başarıyla oluşturuldu ve aramanız veritabanına kaydedildi!")
-                st.markdown("---")
-                st.markdown(response.text)
+                # Sonucu kontrol etme ve ekrana yazdırma
+                if "HATA_EGITIM_DISI" in response.text:
+                    st.error("🚨 Lütfen sadece okul, ders veya eğitimle ilgili geçerli bir konu girin. Argo, anlamsız veya eğitim dışı girişler sistem tarafından reddedilmektedir.")
+                else:
+                    st.success("İçerik başarıyla oluşturuldu ve aramanız veritabanına kaydedildi!")
+                    st.markdown("---")
+                    st.markdown(response.text)
                 
             except Exception as e:
                 st.error(f"Bir hata oluştu: {e}")
