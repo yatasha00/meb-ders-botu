@@ -34,12 +34,12 @@ st.markdown("""
 Öğretmenler için zaman kazandıran asistan! Haftanın kazanımını girin; ön bilgi ölçme etkinliği, vaka analizi ve çalışma kağıdınız saniyeler içinde hazır olsun.
 """)
 
-# # API anahtarını doğrudan Streamlit'in gizli kasasından çekiyoruz
+# API anahtarını doğrudan Streamlit'in gizli kasasından çekiyoruz
 try:
     api_key = st.secrets["gemini_api_key"]
 except KeyError:
     st.error("API anahtarı bulunamadı! Lütfen Streamlit Secrets ayarlarını kontrol edin.")
-    st.stop())
+    st.stop()
 
 # Ana ekranda kullanıcıdan kazanım alma
 kazanim = st.text_input("Bu Haftanın Kazanımı Nedir?", placeholder="Örn: Dijital Etik, İklim Değişikliği, Cümlenin Ögeleri...")
