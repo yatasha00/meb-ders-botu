@@ -61,13 +61,17 @@ if st.button("Ders İçeriğini Hazırla", type="primary"):
         client = genai.Client(api_key=api_key)
         
         prompt = f"""
-        Sen MEB müfredatına tam hakim, yaratıcı ve uzman bir öğretmensin.
-        Kullanıcının girdiği kazanım: '{kazanim}'
+        Sen MEB müfredatına tam hakim, yaratıcı ama aynı zamanda KATI KURALLARI olan bir uzman öğretmensin.
+        Kullanıcının girdiği metin: '{kazanim}'
         
-        ÖNEMLİ GÜVENLİK KONTROLÜ: 
-        Öncelikle bu metnin okul, eğitim veya pedagojik bir konu olup olmadığını kontrol et. Eğer kullanıcı küfür, argo, anlamsız (örn: 'arda mal') veya eğitimle tamamen alakasız bir şey yazdıysa SADECE ŞU GİZLİ KODU YAZ: "HATA_EGITIM_DISI" ve başka hiçbir şey yazma.
+        ÖNEMLİ KAZANIM KONTROLÜ (ÇOK DİKKATLİ OKU):
+        Görevin, girilen metnin MEB müfredatında yer alan gerçek, mantıklı bir 'kazanım' cümlesi veya resmi bir ünite konusu olup olmadığını denetlemektir. 
+        Eğer kullanıcı 'kusmak', 'elma', 'oyun', 'arda mal' gibi tekil/genel kelimeler, eylem bildirmeyen belirsiz kelimeler, argo veya kazanım formatına uymayan gündelik şeyler yazdıysa, KESİNLİKLE İÇERİK ÜRETMEYECEKSİN.
+        Bu durumda SADECE ŞU KODU YAZ: "HATA_GECERSIZ_KAZANIM" ve başka hiçbir şey yazma.
         
-        Eğer konu eğitimle ilgiliyse, ÖNCE bu kazanımın MEB müfredatında hangi derse ait olduğunu tahmin et. 
+        (Kabul edilebilir örnekler: 'Hücrenin yapısını açıklar', 'Kuvvet ve Hareket', 'Mondros Ateşkes Antlaşması' vb.)
+        
+        Eğer metin MEB müfredatına uygun geçerli bir kazanım veya net bir konu ise, ÖNCE bu kazanımın hangi derse ait olduğunu tahmin et. 
         Yanıtının EN BAŞINA tam olarak şu formatta yaz:
         Tahmini Ders: [Dersin Adı]
         
@@ -85,8 +89,8 @@ if st.button("Ders İçeriğini Hazırla", type="primary"):
                 )
                 
                 # TROLL / SAÇMA METİN KONTROLÜ
-                if "HATA_EGITIM_DISI" in response.text:
-                    st.error("🚨 Lütfen sadece okul, ders veya eğitimle ilgili geçerli bir konu girin. Alakasız girişler reddedildi.")
+                if "HATA_GECERSIZ_KAZANIM" in response.text or "HATA_EGITIM_DISI" in response.text:
+                    st.error("🚨 Hata: Lütfen geçerli ve tam bir MEB kazanımı girin. (Örn: 'Hücrenin yapısını açıklar' veya 'Sözcükte Anlam') Tek kelimelik rastgele ifadeler veya eğitim dışı girişler sistem tarafından reddedilmektedir.")
                 else:
                     # 1. Dersi yapay zekanın metninden cımbızla alıyoruz
                     tahmini_ders = "Bilinmeyen Ders"
