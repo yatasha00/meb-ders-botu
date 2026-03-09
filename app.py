@@ -48,17 +48,14 @@ kazanim = st.text_input("Bu Haftanın Kazanımı Nedir?", placeholder="Örn: Dij
 
 # Butona tıklandığında çalışacak işlemler
 if st.button("Ders İçeriğini Hazırla", type="primary"):
-
     if not kazanim:
         st.warning("Lütfen bir ders kazanımı girin.")
     else:
-        # Kazanımı arka planda Google Sheet'e kaydet
-        save_to_sheet(kazanim)
-
+        # DİKKAT: O eski hatalı save_to_sheet satırını buradan sildik!
+        
         # Gemini İstemcisi oluşturuluyor
         client = genai.Client(api_key=api_key)
         
-        # YAPAY ZEKAYA YENİ VE KORUMALI TALİMAT
         prompt = f"""
         Sen MEB müfredatına tam hakim, yaratıcı ve uzman bir öğretmensin.
         Kullanıcının girdiği kazanım: '{kazanim}'
@@ -86,7 +83,6 @@ if st.button("Ders İçeriğini Hazırla", type="primary"):
                 # TROLL / SAÇMA METİN KONTROLÜ
                 if "HATA_EGITIM_DISI" in response.text:
                     st.error("🚨 Lütfen sadece okul, ders veya eğitimle ilgili geçerli bir konu girin. Alakasız girişler reddedildi.")
-                    # DİKKAT: Buraya save_to_sheet eklemedik, tabloya yazılmayacak!
                 else:
                     # 1. Dersi yapay zekanın metninden cımbızla alıyoruz
                     tahmini_ders = "Bilinmeyen Ders"
@@ -95,7 +91,7 @@ if st.button("Ders İçeriğini Hazırla", type="primary"):
                             tahmini_ders = satir.split("Tahmini Ders:")[1].strip()
                             break
                             
-                    # 2. ŞİMDİ Google Sheets'e kaydediyoruz (Sadece başarılı olanlar)
+                    # 2. ŞİMDİ Google Sheets'e kaydediyoruz (Sadece düzgün konuları ve 2 bilgiyle)
                     save_to_sheet(tahmini_ders, kazanim)
                     
                     # 3. Sonucu Ekrana Basıyoruz
