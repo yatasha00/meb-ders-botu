@@ -18,8 +18,12 @@ def save_to_sheet(tahmini_ders, kazanim):
         
         sheet = client.open("Ders Planı Kayıtları").sheet1 
         
-        # Tarih ve zamanı al
-        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # Sunucu saatini alıp Türkiye saatine (UTC+3) çeviriyoruz
+        sunucu_saati = datetime.datetime.now(datetime.timezone.utc)
+        turkiye_saati = sunucu_saati + datetime.timedelta(hours=3)
+        
+        # Türkiye standartlarında Gün.Ay.Yıl Saat:Dakika formatına getiriyoruz
+        now = turkiye_saati.strftime("%d.%m.%Y %H:%M")
         
         # Tabloya 3 sütun olarak kaydet: Tarih | Tahmini Ders | Kazanım
         sheet.append_row([now, tahmini_ders, kazanim])
