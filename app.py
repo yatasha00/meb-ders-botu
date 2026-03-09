@@ -47,7 +47,7 @@ kazanim = st.text_input("Bu Haftanın Kazanımı Nedir?", placeholder="Örn: Dij
 # Butona tıklandığında çalışacak işlemler
 if st.button("Ders İçeriğini Hazırla", type="primary"):
 
-    elif not kazanim:
+    if not kazanim:
         st.warning("Lütfen bir ders kazanımı girin.")
     else:
         # Kazanımı arka planda Google Sheet'e kaydet
