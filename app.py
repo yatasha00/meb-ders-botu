@@ -14,7 +14,7 @@ def save_to_sheet(kazanim):
         ]
         
         # JSON dosyası yerine Streamlit'in gizli kasasından bilgileri çekiyoruz
-        creds_dict = json.loads(st.secrets["google_sheets_sifrem"])
+        creds_dict = dict(st.secrets["google_sheets_sifrem"])
         creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
         client = gspread.authorize(creds)
         
