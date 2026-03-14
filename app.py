@@ -35,9 +35,10 @@ def save_to_sheet(tahmini_ders, kazanim):
 # --- Sayfa Ayarları ---
 st.set_page_config(page_title="MEB Ders Planı Asistanı", page_icon="📚")
 
-st.title("📚 MEB Uyumlu Ders Planı ve Etkinlik Botu")
+st.title("💻 İnşacı Bilişim Teknolojileri Ders Asistanı")
 st.markdown("""
-Öğretmenler için zaman kazandıran asistan! Haftanın kazanımını girin; ön bilgi ölçme etkinliği, vaka analizi ve çalışma kağıdınız saniyeler içinde hazır olsun.
+Bilişim öğretmenleri için inşacı yaklaşıma (5E Modeli) uygun ders tasarımı asistanı. 
+Soyut programlama kavramlarını (Algoritma, Döngüler, Scratch, Python) öğrencilerinize keşfettirecek projeler ve senaryolar saniyeler içinde hazır!
 """)
 
 # API anahtarını doğrudan Streamlit'in gizli kasasından çekiyoruz
@@ -61,24 +62,21 @@ if st.button("Ders İçeriğini Hazırla", type="primary"):
         client = genai.Client(api_key=api_key)
         
         prompt = f"""
-        Sen MEB müfredatına tam hakim, yaratıcı ama aynı zamanda KATI KURALLARI olan bir uzman öğretmensin.
-        Kullanıcının girdiği metin: '{kazanim}'
+        Sen 'Bilgisayar ve Öğretim Teknolojileri Eğitimi' (BÖTE) alanında uzman, 'İnşacı Öğretim Yaklaşımını' (Constructivism) kusursuz uygulayan bir yapay zeka asistanısın.
+        Kullanıcının girdiği Bilişim Teknolojileri konusu/kazanımı: '{kazanim}'
         
-        ÖNEMLİ KAZANIM KONTROLÜ (ÇOK DİKKATLİ OKU):
-        Görevin, girilen metnin MEB müfredatında yer alan gerçek, mantıklı bir 'kazanım' cümlesi veya resmi bir ünite konusu olup olmadığını denetlemektir. 
-        Eğer kullanıcı 'kusmak', 'elma', 'oyun', 'arda mal' gibi tekil/genel kelimeler, eylem bildirmeyen belirsiz kelimeler, argo veya kazanım formatına uymayan gündelik şeyler yazdıysa, KESİNLİKLE İÇERİK ÜRETMEYECEKSİN.
-        Bu durumda SADECE ŞU KODU YAZ: "HATA_GECERSIZ_KAZANIM" ve başka hiçbir şey yazma.
+        ÖNEMLİ KONTROL: 
+        Bu metnin bilgisayar eğitimi, kodlama, algoritma, dijital vatandaşlık veya yazılım ile ilgili geçerli bir konu olup olmadığını kontrol et. Eğer alakasız veya anlamsız bir girişse SADECE ŞU KODU YAZ: "HATA_GECERSIZ_KAZANIM"
         
-        (Kabul edilebilir örnekler: 'Hücrenin yapısını açıklar', 'Kuvvet ve Hareket', 'Mondros Ateşkes Antlaşması' vb.)
+        Eğer konu Bilişim alanına uygunsa, bu konuyu öğrencilere doğrudan anlatmak yerine, kendi kendilerine inşa ederek öğrenecekleri "5E İNŞACI ÖĞRETİM MODELİNE" göre bir ders planı hazırla.
         
-        Eğer metin MEB müfredatına uygun geçerli bir kazanım veya net bir konu ise, ÖNCE bu kazanımın hangi derse ait olduğunu tahmin et. 
-        Yanıtının EN BAŞINA tam olarak şu formatta yaz:
-        Tahmini Ders: [Dersin Adı]
+        Yanıtını şu başlıklarla oluştur:
         
-        Ardından şu 3 başlıkta içeriği üret:
-        1. Ön Bilgi Ölçme Etkinliği
-        2. Kısa Hikaye veya Vaka Analizi
-        3. Çalışma Kağıdı Taslağı
+        1. GİRME (Engage): Öğrencilerin dikkatini çekecek, konuyla ilgili gerçek hayattan bir problem durumu veya kışkırtıcı bir soru. (Konuyu söyleme, merak uyandır).
+        2. KEŞFETME (Explore): Öğrencilerin bilgisayar başında veya kağıt üzerinde gruplar halinde deneyerek, yanılarak ve tartışarak kavramı kendi kendilerine keşfedecekleri bir aktivite yönergesi.
+        3. AÇIKLAMA (Explain): Öğrenciler keşfettikten sonra, öğretmenin kavrama doğru teknik ismi (algoritma, döngü vb.) vereceği ve öğrencilerin bulgularını özetleyeceği Sokratik soru örnekleri.
+        4. DERİNLEŞTİRME (Elaborate): Öğrencilerin yeni öğrendikleri bu kavramı farklı bir probleme veya mini bir kodlama projesine (Scratch/Python vb.) uygulayacakları yeni bir görev.
+        5. DEĞERLENDİRME (Evaluate): Öğrencinin süreci ve ortaya çıkardığı ürünü yansıtacağı (öz değerlendirme veya akran değerlendirmesi) bir rubrik veya açık uçlu değerlendirme soruları.
         """
         
         with st.spinner("Ders içeriğiniz özenle hazırlanıyor... Lütfen bekleyin."):
