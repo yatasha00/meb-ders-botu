@@ -81,7 +81,7 @@ if st.button("Ders İçeriğini Hazırla", type="primary"):
         with st.spinner("Ders içeriğiniz özenle hazırlanıyor... Lütfen bekleyin."):
             try:
                 response = client.models.generate_content(
-                    model='gemini-1.5-flash-8b',
+                    model='gemini-2.5',
                     contents=prompt,
                 )
                 
