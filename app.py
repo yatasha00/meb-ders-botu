@@ -86,8 +86,9 @@ if st.button("Ders İçeriğini Hazırla", type="primary"):
                 )
                 
                 # TROLL / SAÇMA METİN KONTROLÜ
+                # TROLL VEYA GEÇERSİZ KAZANIM KONTROLÜ
                 if "HATA_GECERSIZ_KAZANIM" in response.text or "HATA_EGITIM_DISI" in response.text:
-                    st.error("🚨 Hata: Lütfen geçerli ve tam bir MEB kazanımı girin. (Örn: 'Hücrenin yapısını açıklar' veya 'Sözcükte Anlam') Tek kelimelik rastgele ifadeler veya eğitim dışı girişler sistem tarafından reddedilmektedir.")
+                    st.error("🚨 Hata: Lütfen geçerli bir Bilişim Teknolojileri konusu girin. (Örn: 'Algoritma kavramını açıklar' veya 'Siber Zorbalık'). Alakasız veya tek kelimelik girişler reddedilmektedir.")
                 else:
                     # 1. Dersi yapay zekanın metninden cımbızla alıyoruz
                     tahmini_ders = "Bilinmeyen Ders"
