@@ -49,8 +49,7 @@ except KeyError:
     st.stop()
 
 # Ana ekranda kullanıcıdan kazanım alma
-kazanim = st.text_input("Bu Haftanın Kazanımı Nedir?", placeholder="Örn: Dijital Etik, İklim Değişikliği, Cümlenin Ögeleri...")
-
+kazanim = st.text_area("🎯 Bu Haftanın Bilişim Konusu/Kazanımı Nedir?", placeholder="Örn: Python'da Döngüler, Algoritma Mantığı, Siber Zorbalık, Scratch ile Oyun Tasarımı...")
 # Butona tıklandığında çalışacak işlemler
 if st.button("Ders İçeriğini Hazırla", type="primary"):
     if not kazanim:
