@@ -97,13 +97,4 @@ if st.button("Ders İçeriğini Hazırla", type="primary"):
             except Exception as e:
                 st.error(f"Bir hata oluştu: {e}")
                             
-                    # 2. ŞİMDİ Google Sheets'e kaydediyoruz (Sadece düzgün konuları ve 2 bilgiyle)
-                    save_to_sheet(tahmini_ders, kazanim)
                     
-                    # 3. Sonucu Ekrana Basıyoruz
-                    st.success(f"İçerik başarıyla oluşturuldu! (Algılanan Ders: {tahmini_ders})")
-                    st.markdown("---")
-                    st.markdown(response.text)
-                
-            except Exception as e:
-                st.error(f"Bir hata oluştu: {e}")
