@@ -57,27 +57,32 @@ if st.button("Ders İçeriğini Hazırla", type="primary"):
         # Gemini İstemcisi oluşturuluyor
         client = genai.Client(api_key=api_key)
         
-        # YAPAY ZEKAYA YENİ VE İNŞACI BİLİŞİM TALİMATI
-        # YAPAY ZEKAYA YENİ: İNŞACI YAKLAŞIM + KLASİK 3 BAŞLIKLI ŞABLON
+        # YAPAY ZEKAYA YENİ TALİMAT: EŞLİ PROGRAMLAMA (PAIR PROGRAMMING) ODAKLI
         prompt = f"""
-        Sen 'Bilgisayar ve Öğretim Teknolojileri Eğitimi' (BÖTE) alanında uzman, 'İnşacı Öğretim Yaklaşımını' (Constructivism) benimsemiş yaratıcı bir yapay zeka asistanısın.
+        Sen 'Bilgisayar ve Öğretim Teknolojileri Eğitimi' (BÖTE) alanında uzman, işbirlikli öğrenme ve özellikle 'Eşli Programlama' (Pair Programming) tekniklerinde usta yaratıcı bir yapay zeka asistanısın.
         Kullanıcının girdiği Bilişim Teknolojileri konusu/kazanımı: '{kazanim}'
         
         ÖNEMLİ KONTROL: 
-        Bu metnin bilgisayar eğitimi, kodlama, algoritma, dijital vatandaşlık veya yazılım ile ilgili geçerli bir konu olup olmadığını kontrol et. Eğer alakasız, tek kelimelik (örn: 'elma', 'kusmak') veya anlamsız bir girişse SADECE ŞU KODU YAZ: "HATA_GECERSIZ_KAZANIM" ve başka hiçbir şey yazma.
+        Bu metnin bilgisayar eğitimi, kodlama, algoritma veya yazılım ile ilgili geçerli bir konu olup olmadığını kontrol et. Eğer alakasız, tek kelimelik (örn: 'elma', 'kusmak') veya anlamsız bir girişse SADECE ŞU KODU YAZ: "HATA_GECERSIZ_KAZANIM" ve başka hiçbir şey yazma.
         
-        Eğer konu Bilişim alanına uygunsa, bu konuyu öğrencilere doğrudan (ezbere) anlatmak yerine, kendi kendilerine keşfedip inşa edecekleri "İNŞACI ÖĞRETİM YAKLAŞIMINA" uygun bir ders planı hazırla. 
+        Eğer konu Bilişim alanına uygunsa, bu kazanımı öğrencilere öğretmek için Eşli Programlama yöntemini merkeze alan bir ders planı ve etkinlik rehberi hazırla. 
         
-        Lütfen yanıtını tam olarak aşağıdaki 3 ana başlık altında oluştur:
+        Lütfen yanıtını tam olarak aşağıdaki başlıklar altında, açık ve uygulanabilir bir dille oluştur:
         
-        1. Ön Bilgi Ölçme ve Keşfetme Etkinliği
-        (Öğrencilerin bu konu hakkındaki mevcut bilgilerini ortaya çıkaracak, onlara doğrudan bilgiyi vermek yerine problemi kendi kendilerine fark etmelerini ve sınıfta tartışmalarını sağlayacak inşacı bir giriş etkinliği planla.)
+        1. Derse Giriş ve Problemin Sunumu
+        (Öğrencilerin dikkatini çekecek ve birazdan eşli olarak çözecekleri problemi/senaryoyu tanıtan kısa bir giriş.)
         
-        2. Kısa Hikaye veya Vaka Analizi
-        (Öğrencilerin ilgisini çekecek, gerçek hayattan bir bilişim/teknoloji problemini barındıran bir hikaye kurgula. Hikaye doğrudan cevabı vermemeli, öğrencileri "Siz olsaydınız bu problemi algoritma/kodlama ile nasıl çözerdiniz?" diye düşünmeye sevk etmeli.)
+        2. Etkinlik 1: Yapılandırılmamış Eşli Programlama (Unstructured Pair)
+        (Bu teknikte öğrencilere kesin roller verilmez, doğal bir şekilde yardımlaşarak çalışırlar. Bu kazanım için öğrencilerin serbestçe fikir alışverişi yapıp, aynı bilgisayar/kağıt üzerinde beraber deneme yanılma yapacakları bir görev tasarla. Öğretmen bu süreçte neye dikkat etmeli?)
         
-        3. İnşacı Çalışma Kağıdı Taslağı
-        (Öğrencilerin ezber yapmadan, öğrendikleri kavramları kullanarak yeni bir çözüm veya algoritma tasarlayacakları, açık uçlu beyin fırtınası soruları ve mini bir proje/tasarım görevi içeren yapılandırılmış bir çalışma kağıdı metni.)
+        3. Etkinlik 2: Sürücü - Gezgin Tekniği (Driver - Navigator)
+        (Bu teknikte roller kesindir. Bu kazanım doğrultusunda öğrencilere vereceğin spesifik bir kodlama veya algoritma görevi tasarla. 
+        - Sürücü (Driver) ne yapacak? (Klavyeyi/kalemi tutan kişi)
+        - Gezgin (Navigator) ne yapacak? (Hataları arayan, yönlendiren ve büyük resmi gören kişi)
+        - Rol değişimi (Switch) ne zaman ve nasıl yapılacak?)
+        
+        4. Eşli Değerlendirme ve Çalışma Kağıdı
+        (Öğrencilerin etkinlik sonunda hem öğrendikleri konuyu hem de takım arkadaşlarının performansını değerlendirebilecekleri 2-3 adet açık uçlu yansıtma sorusu.)
         """
         
         with st.spinner("İnşacı ders planınız özenle hazırlanıyor... Lütfen bekleyin."):
